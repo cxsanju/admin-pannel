@@ -1,99 +1,104 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BHAU Admin Panel</title>
 <style>
-:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#171717;background:#f5f6f8}*{box-sizing:border-box}body{margin:0;padding:24px 14px}.wrap{max-width:760px;margin:auto}h1{font-size:25px;margin:0 0 6px}.sub,.desc,.note{color:#666}.sub{margin:0 0 22px}.panel{background:#fff;border:1px solid #e2e4e8;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px #00000008}label.field{display:block;font-weight:650;margin:14px 0 7px}input[type=text]{width:100%;padding:12px 13px;border:1px solid #cfd3da;border-radius:9px;font:inherit}.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid #eee}.row:last-child{border-bottom:0}.desc{font-size:14px;margin-top:3px;line-height:1.4}.switch{position:relative;display:inline-block;width:48px;height:27px;flex:none;margin:0}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;cursor:pointer;inset:0;background:#c8ccd2;border-radius:20px;transition:.2s}.slider:before{content:"";position:absolute;height:21px;width:21px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}.switch input:checked+.slider{background:#2563eb}.switch input:checked+.slider:before{transform:translateX(21px)}button{border:0;border-radius:10px;padding:12px 17px;font:inherit;font-weight:650;cursor:pointer}.primary{background:#2563eb;color:#fff}.secondary{background:#eef1f5;color:#20242b}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.status{padding:11px 13px;border-radius:9px;background:#f0f2f5;color:#4b5563;font-size:14px;margin-top:14px;white-space:pre-wrap;overflow-wrap:anywhere}.status.ok{background:#e9f9ef;color:#166534}.status.err{background:#fff0f0;color:#991b1b}.note{font-size:13px;line-height:1.5}.pill{display:inline-block;border-radius:20px;padding:4px 9px;background:#eef2ff;color:#3730a3;font-size:12px}
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#101827;background:#f3f5f8;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;padding:24px 8px 34px}main{max-width:780px;margin:0 auto}h1{font-size:24px;line-height:1.25;margin:0 0 6px;font-weight:800}.subtitle{color:#637083;margin:0 0 21px;font-size:15px}
+.panel{background:#fff;border:1px solid #dce1e8;border-radius:18px;padding:20px;box-shadow:0 2px 7px #11182708}.pill{display:inline-block;border-radius:20px;background:#eef2ff;color:#3730a3;padding:5px 10px;font-size:12px;margin-bottom:15px}
+.field{margin-bottom:16px}label.fieldlabel{display:block;font-weight:750;font-size:15px;margin-bottom:7px}.field input[type=text]{width:100%;height:48px;border:1px solid #cbd3df;border-radius:10px;padding:0 13px;font:inherit;color:#111827;outline:none}.field input:focus{border-color:#3569ed;box-shadow:0 0 0 3px #3569ed1a}
+.setting{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 0;border-bottom:1px solid #e8ebf0}.setting:last-of-type{border-bottom:0}.setting-copy{min-width:0}.setting-title{font-weight:780;font-size:15px;margin-bottom:4px}.setting-desc{font-size:13px;line-height:1.4;color:#637083}
+.switch{position:relative;flex:none;width:48px;height:28px}.switch input{width:0;height:0;opacity:0}.track{position:absolute;inset:0;border-radius:20px;background:#c9ced6;cursor:pointer;transition:.2s}.track:before{content:"";position:absolute;left:4px;top:4px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #0002;transition:.2s}.switch input:checked+.track{background:#2d65ee}.switch input:checked+.track:before{transform:translateX(20px)}.switch input:disabled+.track{opacity:.55;cursor:wait}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button{border:0;border-radius:11px;padding:12px 17px;font:inherit;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:wait}.save{background:#2d65ee;color:white}.reload{background:#eef1f5;color:#111827}.notice{margin-top:14px;padding:12px;border-radius:10px;font-size:13px;line-height:1.45;background:#f0f2f5;color:#536071;overflow-wrap:anywhere}.notice.ok{background:#e9f8ef;color:#167343}.notice.err{background:#fff0f0;color:#a52323}.notice.warn{background:#fff7e6;color:#8a5a00}.smallnote{color:#667085;font-size:12px;line-height:1.55;margin:14px 0 0}
+@media(max-width:480px){body{padding:18px 8px}.panel{padding:16px}.setting{gap:12px}.setting-title{font-size:14px}.setting-desc{font-size:12px}.actions button{flex:1}}
 </style>
-</head><body><main class="wrap">
-<h1>BHAU Admin Panel</h1><p class="sub">Admin Settings · Firebase Realtime Database</p>
-<section class="panel"><div class="pill">Settings</div>
-<label class="field" for="fixedCardId">Fixed Card ID</label><input id="fixedCardId" type="text" placeholder="Enter bank card ID" autocomplete="off">
-<label class="field" for="adminBankName">Admin-Set Bank Card Name</label><input id="adminBankName" type="text" placeholder="Enter bank card name" autocomplete="off">
-<div class="row"><div><strong>Auto Fetch Bank Card Name</strong><div class="desc">ON: use the name returned by the API. OFF: use the name entered above.</div></div><label class="switch" aria-label="Auto Fetch Bank Card Name"><input id="autoFetchName" type="checkbox"><span class="slider"></span></label></div>
-<div class="row"><div><strong>Withdrawal Details</strong><div class="desc">Show or hide detailed withdrawal history in the user panel.</div></div><label class="switch" aria-label="Withdrawal Details"><input id="withdrawalDetailsVisible" type="checkbox" checked><span class="slider"></span></label></div>
-<div class="row"><div><strong>Show Withdrawal Bank Name</strong><div class="desc">ON: show the name in withdrawal history. OFF: hide the name.</div></div><label class="switch" aria-label="Show Withdrawal Bank Name"><input id="withdrawalNameVisible" type="checkbox"><span class="slider"></span></label></div>
-<div class="row"><div><strong>Manual Login Maintenance Mode</strong><div class="desc">ON: block phone/password login and show “Currently manual login is in maintenance mode.” OFF: allow normal manual login.</div></div><label class="switch" aria-label="Manual Login Maintenance Mode"><input id="manualLoginMaintenanceMode" type="checkbox"><span class="slider"></span></label></div>
-<div class="row"><div><strong>Maintenance Mode</strong><div class="desc">ON: show a maintenance screen and block access to the user panel. OFF: allow normal access.</div></div><label class="switch" aria-label="Maintenance Mode"><input id="maintenanceMode" type="checkbox"><span class="slider"></span></label></div>
-<div class="row"><div><strong>Withdrawal Amount Ignore</strong><div class="desc">Stores a setting flag only; it does not change the actual withdrawal amount or transaction.</div></div><label class="switch" aria-label="Withdrawal Amount Ignore"><input id="ignoreWithdrawalAmount" type="checkbox"><span class="slider"></span></label></div>
-<div class="actions"><button class="primary" id="saveBtn" type="button">Save Settings</button><button class="secondary" id="loadBtn" type="button">Reload Settings</button></div>
-<div id="status" class="status" role="status">Loading Firebase SDK…</div></section>
-<section class="panel"><strong>Connection Help</strong><p class="note">If loading or saving fails, check your internet connection, confirm that Realtime Database is enabled, and verify that its rules allow read/write access. Public write access allows anyone to change these settings.</p></section>
+</head>
+<body>
+<main>
+<h1>BHAU Admin Panel</h1>
+<p class="subtitle">Admin Settings · Firebase Realtime Database</p>
+<section class="panel">
+<span class="pill">Settings</span>
+<div class="field"><label class="fieldlabel" for="fixedCardId">Fixed Card ID</label><input id="fixedCardId" type="text" placeholder="Enter bank card ID" autocomplete="off"></div>
+<div class="field"><label class="fieldlabel" for="adminBankName">Admin-Set Bank Card Name</label><input id="adminBankName" type="text" placeholder="Enter bank card name" autocomplete="off"></div>
+
+<div class="setting"><div class="setting-copy"><div class="setting-title">Auto Fetch Bank Card Name</div><div class="setting-desc">ON: use the name returned by the API. OFF: use the name entered above.</div></div><label class="switch"><input id="autoFetchBankCardName" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">Withdrawal Details</div><div class="setting-desc">Show or hide detailed withdrawal history in the user panel.</div></div><label class="switch"><input id="withdrawalDetailsVisible" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">Show Withdrawal Bank Name</div><div class="setting-desc">ON: show the name in withdrawal history. OFF: hide the name.</div></div><label class="switch"><input id="showWithdrawalBankName" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">Manual Login Maintenance Mode</div><div class="setting-desc">ON: block phone/password login and show “Currently manual login is in maintenance mode.” OFF: allow normal manual login.</div></div><label class="switch"><input id="manualLoginMaintenanceMode" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">Maintenance Mode</div><div class="setting-desc">ON: show a maintenance screen and block access to the user panel. OFF: allow normal access.</div></div><label class="switch"><input id="maintenanceMode" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">Withdrawal Amount Ignore</div><div class="setting-desc">Stores a setting flag only; it does not change the actual withdrawal amount or transaction.</div></div><label class="switch"><input id="ignoreWithdrawalAmount" type="checkbox"><span class="track"></span></label></div>
+
+<div class="actions"><button class="save" id="saveBtn" disabled>Save Settings</button><button class="reload" id="reloadBtn" disabled>Reload Settings</button></div>
+<div id="status" class="notice">Connecting to Firebase…</div>
+<p class="smallnote">Settings are saved under <code>/adminSettings</code>. Use the same Firebase project in the user HTML. A green confirmation appears only after Firebase confirms the write.</p>
+</section>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script>
-(() => {
-  const firebaseConfig = {
-    apiKey: "AIzaSyC-Xgu-VunVg7XgxeDdvMOYjm9PQspomRc",
-    authDomain: "bhau-cef79.firebaseapp.com",
-    databaseURL: "https://bhau-cef79-default-rtdb.firebaseio.com",
-    projectId: "bhau-cef79",
-    storageBucket: "bhau-cef79.firebasestorage.app",
-    messagingSenderId: "156850605928",
-    appId: "1:156850605928:web:faafb9d5137def3f7a90dd",
-    measurementId: "G-DEBNNQMGCG"
-  };
-  const statusEl = document.getElementById('status');
-  const setStatus = (message, type = '') => {
-    statusEl.textContent = message;
-    statusEl.className = 'status' + (type ? ' ' + type : '');
-  };
-  let db = null;
-  try {
-    if (!window.firebase) throw new Error('Firebase SDK did not load. Check internet access or browser extensions.');
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    setStatus('Firebase SDK loaded. Click “Reload Settings” to read current settings.');
-  } catch (error) {
-    setStatus('Firebase initialization failed: ' + (error.message || error), 'err');
-  }
-  const settingsRef = () => db.ref('adminSettings');
-  function readForm() {
-    return {
-      fixedCardId: document.getElementById('fixedCardId').value.trim(),
-      adminBankName: document.getElementById('adminBankName').value.trim(),
-      autoFetchBankCardName: document.getElementById('autoFetchName').checked,
-      withdrawalDetailsVisible: document.getElementById('withdrawalDetailsVisible').checked,
-      withdrawalNameVisible: document.getElementById('withdrawalNameVisible').checked,
-      ignoreWithdrawalAmount: document.getElementById('ignoreWithdrawalAmount').checked,
-      maintenanceMode: document.getElementById('maintenanceMode').checked,
-      manualLoginMaintenanceMode: document.getElementById('manualLoginMaintenanceMode').checked,
-      updatedAt: new Date().toISOString()
-    };
-  }
-  function fillForm(data) {
-    data = data || {};
-    document.getElementById('fixedCardId').value = data.fixedCardId || '';
-    document.getElementById('adminBankName').value = data.adminBankName || '';
-    document.getElementById('autoFetchName').checked = data.autoFetchBankCardName === true;
-    document.getElementById('withdrawalDetailsVisible').checked = data.withdrawalDetailsVisible !== false;
-    document.getElementById('withdrawalNameVisible').checked = data.withdrawalNameVisible === true;
-    document.getElementById('ignoreWithdrawalAmount').checked = data.ignoreWithdrawalAmount === true;
-    document.getElementById('maintenanceMode').checked = data.maintenanceMode === true;
-    document.getElementById('manualLoginMaintenanceMode').checked = data.manualLoginMaintenanceMode === true;
-  }
-  document.getElementById('saveBtn').addEventListener('click', async () => {
-    if (!db) return setStatus('Firebase is not initialized. Check the SDK loading error above.', 'err');
-    try {
-      setStatus('Saving settings…');
-      await settingsRef().set(readForm());
-      setStatus('Settings saved successfully to Firebase at /adminSettings.', 'ok');
-    } catch (error) {
-      setStatus('Save failed: ' + (error.message || error) + '\nCheck Realtime Database rules and the database URL.', 'err');
-    }
-  });
-  document.getElementById('loadBtn').addEventListener('click', async () => {
-    if (!db) return setStatus('Firebase is not initialized. Check the SDK loading error above.', 'err');
-    try {
-      setStatus('Loading settings…');
-      const snapshot = await settingsRef().get();
-      fillForm(snapshot.exists() ? snapshot.val() : {});
-      setStatus(snapshot.exists() ? 'Settings loaded from Firebase.' : 'No /adminSettings data exists yet. Default values are shown.', 'ok');
-    } catch (error) {
-      setStatus('Load failed: ' + (error.message || error) + '\nCheck Realtime Database rules and the database URL.', 'err');
-    }
-  });
+(function(){
+'use strict';
+const firebaseConfig={
+ apiKey:"AIzaSyC-Xgu-VunVg7XgxeDdvMOYjm9PQspomRc",
+ authDomain:"bhau-cef79.firebaseapp.com",
+ databaseURL:"https://bhau-cef79-default-rtdb.firebaseio.com",
+ projectId:"bhau-cef79",
+ storageBucket:"bhau-cef79.firebasestorage.app",
+ messagingSenderId:"156850605928",
+ appId:"1:156850605928:web:faafb9d5137def3f7a90dd",
+ measurementId:"G-DEBNNQMGCG"
+};
+const textKeys=['fixedCardId','adminBankName'];
+const boolKeys=['autoFetchBankCardName','withdrawalDetailsVisible','showWithdrawalBankName','manualLoginMaintenanceMode','maintenanceMode','ignoreWithdrawalAmount'];
+const defaults={fixedCardId:'',adminBankName:'',autoFetchBankCardName:true,withdrawalDetailsVisible:false,showWithdrawalBankName:true,manualLoginMaintenanceMode:false,maintenanceMode:false,ignoreWithdrawalAmount:false};
+const $=id=>document.getElementById(id);
+const saveBtn=$('saveBtn'),reloadBtn=$('reloadBtn'),status=$('status');
+let db,ref,connected=false,busy=false,dirty=false,lastSnapshot={...defaults};
+function message(t,type=''){status.textContent=t;status.className='notice'+(type?' '+type:'');}
+function setControlsEnabled(on){saveBtn.disabled=!on||busy;reloadBtn.disabled=!on||busy;[...textKeys,...boolKeys].forEach(k=>$(k).disabled=!on||busy);}
+function readForm(){const o={};textKeys.forEach(k=>o[k]=$(k).value.trim());boolKeys.forEach(k=>o[k]=$(k).checked);return o;}
+function render(data){const v={...defaults,...(data||{})};textKeys.forEach(k=>$(k).value=typeof v[k]==='string'?v[k]:'');boolKeys.forEach(k=>$(k).checked=v[k]===true);lastSnapshot={...v};dirty=false;}
+function formChanged(){dirty=true;message('Unsaved changes. Click Save Settings to store them in Firebase.','warn');}
+[...textKeys,...boolKeys].forEach(k=>$(k).addEventListener(textKeys.includes(k)?'input':'change',formChanged));
+try{if(!window.firebase)throw new Error('Firebase SDK did not load. Check your internet connection.');if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);db=firebase.database();ref=db.ref('/adminSettings');}
+catch(e){message('Firebase initialization failed: '+e.message,'err');return;}
+ref.on('value',snap=>{
+ connected=true;
+ if(!dirty&&!busy)render(snap.val()||{});
+ setControlsEnabled(true);
+ message(dirty?'Connected. You have unsaved changes.':'Settings loaded from Firebase.','ok');
+},err=>{connected=false;setControlsEnabled(false);message('Firebase read failed: '+err.message+' Check Realtime Database permissions.','err');});
+$('saveBtn').addEventListener('click',async()=>{
+ if(!connected||busy)return;
+ busy=true;setControlsEnabled(true);
+ const values=readForm();
+ try{
+   // Update only known keys so unrelated settings in /adminSettings remain intact.
+   await ref.update(values);
+   const verifySnap = await ref.get();
+   const stored = verifySnap.val() || {};
+   const mismatches = Object.keys(values).filter(k => stored[k] !== values[k]);
+   if (mismatches.length) {
+     dirty = true;
+     message('Firebase write completed, but verification did not match for: '+mismatches.join(', ')+'. Check database rules and reload.','err');
+   } else {
+     render(stored);
+     message('Settings saved and verified successfully in Firebase at /adminSettings.','ok');
+   }
+ }catch(e){message('Save failed: '+e.message+' Check database rules/permissions.','err');}
+ finally{busy=false;setControlsEnabled(connected);}
+});
+$('reloadBtn').addEventListener('click',async()=>{
+ if(!connected||busy)return;
+ busy=true;setControlsEnabled(true);
+ try{const snap=await ref.get();render(snap.val()||{});message('Settings reloaded from Firebase.','ok');}
+ catch(e){message('Reload failed: '+e.message,'err');}
+ finally{busy=false;setControlsEnabled(connected);}
+});
 })();
-</script></body></html>
+</script>
+</body>
+</html>
