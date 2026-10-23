@@ -76,7 +76,6 @@ $('saveBtn').addEventListener('click',async()=>{
  busy=true;setControlsEnabled(true);
  const values=readForm();
  try{
-   // Update only known keys so unrelated settings in /adminSettings remain intact.
    await ref.update(values);
    const verifySnap = await ref.get();
    const stored = verifySnap.val() || {};
