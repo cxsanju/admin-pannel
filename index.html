@@ -12,6 +12,8 @@
 .setting{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 0;border-bottom:1px solid #e8ebf0}.setting:last-of-type{border-bottom:0}.setting-copy{min-width:0}.setting-title{font-weight:780;font-size:15px;margin-bottom:4px}.setting-desc{font-size:13px;line-height:1.4;color:#637083}
 .switch{position:relative;flex:none;width:48px;height:28px}.switch input{width:0;height:0;opacity:0}.track{position:absolute;inset:0;border-radius:20px;background:#c9ced6;cursor:pointer;transition:.2s}.track:before{content:"";position:absolute;left:4px;top:4px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #0002;transition:.2s}.switch input:checked+.track{background:#2d65ee}.switch input:checked+.track:before{transform:translateX(20px)}.switch input:disabled+.track{opacity:.55;cursor:wait}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}button{border:0;border-radius:11px;padding:12px 17px;font:inherit;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:wait}.save{background:#2d65ee;color:white}.reload{background:#eef1f5;color:#111827}.notice{margin-top:14px;padding:12px;border-radius:10px;font-size:13px;line-height:1.45;background:#f0f2f5;color:#536071;overflow-wrap:anywhere}.notice.ok{background:#e9f8ef;color:#167343}.notice.err{background:#fff0f0;color:#a52323}.notice.warn{background:#fff7e6;color:#8a5a00}.smallnote{color:#667085;font-size:12px;line-height:1.55;margin:14px 0 0}
+.btn-danger{background:#ef4444;color:white;box-shadow:0 4px 12px rgba(239,68,68,.2);margin-top:10px;width:100%;}
+.btn-danger:hover{filter:brightness(1.1)}
 @media(max-width:480px){body{padding:18px 8px}.panel{padding:16px}.setting{gap:12px}.setting-title{font-size:14px}.setting-desc{font-size:12px}.actions button{flex:1}}
 </style>
 </head>
@@ -33,6 +35,13 @@
 
 <div class="actions"><button class="save" id="saveBtn" disabled>Save Settings</button><button class="reload" id="reloadBtn" disabled>Reload Settings</button></div>
 <div id="status" class="notice">Connecting to Firebase…</div>
+
+<div style="margin-top:20px; border-top:1px solid #e8ebf0; padding-top:20px;">
+  <div class="setting-title" style="color:#ef4444;">Danger Zone</div>
+  <div class="setting-desc" style="margin-bottom:10px;">Instantly log out all users from all devices. They will be forced to log in again.</div>
+  <button class="btn-danger" id="clearSessionsBtn">🚨 Clear All Device Sessions</button>
+</div>
+
 <p class="smallnote">Settings are saved under <code>/adminSettings</code>. Use the same Firebase project in the user HTML. A green confirmation appears only after Firebase confirms the write.</p>
 </section>
 </main>
@@ -55,22 +64,24 @@ const textKeys=['fixedCardId','adminBankName'];
 const boolKeys=['autoFetchBankCardName','withdrawalDetailsVisible','showWithdrawalBankName','manualLoginMaintenanceMode','maintenanceMode','ignoreWithdrawalAmount'];
 const defaults={fixedCardId:'',adminBankName:'',autoFetchBankCardName:true,withdrawalDetailsVisible:false,showWithdrawalBankName:true,manualLoginMaintenanceMode:false,maintenanceMode:false,ignoreWithdrawalAmount:false};
 const $=id=>document.getElementById(id);
-const saveBtn=$('saveBtn'),reloadBtn=$('reloadBtn'),status=$('status');
+const saveBtn=$('saveBtn'),reloadBtn=$('reloadBtn'),status=$('status'), clearSessionsBtn=$('clearSessionsBtn');
 let db,ref,connected=false,busy=false,dirty=false,lastSnapshot={...defaults};
 function message(t,type=''){status.textContent=t;status.className='notice'+(type?' '+type:'');}
-function setControlsEnabled(on){saveBtn.disabled=!on||busy;reloadBtn.disabled=!on||busy;[...textKeys,...boolKeys].forEach(k=>$(k).disabled=!on||busy);}
+function setControlsEnabled(on){saveBtn.disabled=!on||busy;reloadBtn.disabled=!on||busy;clearSessionsBtn.disabled=!on||busy;[...textKeys,...boolKeys].forEach(k=>$(k).disabled=!on||busy);}
 function readForm(){const o={};textKeys.forEach(k=>o[k]=$(k).value.trim());boolKeys.forEach(k=>o[k]=$(k).checked);return o;}
 function render(data){const v={...defaults,...(data||{})};textKeys.forEach(k=>$(k).value=typeof v[k]==='string'?v[k]:'');boolKeys.forEach(k=>$(k).checked=v[k]===true);lastSnapshot={...v};dirty=false;}
 function formChanged(){dirty=true;message('Unsaved changes. Click Save Settings to store them in Firebase.','warn');}
 [...textKeys,...boolKeys].forEach(k=>$(k).addEventListener(textKeys.includes(k)?'input':'change',formChanged));
 try{if(!window.firebase)throw new Error('Firebase SDK did not load. Check your internet connection.');if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);db=firebase.database();ref=db.ref('/adminSettings');}
 catch(e){message('Firebase initialization failed: '+e.message,'err');return;}
+
 ref.on('value',snap=>{
  connected=true;
  if(!dirty&&!busy)render(snap.val()||{});
  setControlsEnabled(true);
  message(dirty?'Connected. You have unsaved changes.':'Settings loaded from Firebase.','ok');
 },err=>{connected=false;setControlsEnabled(false);message('Firebase read failed: '+err.message+' Check Realtime Database permissions.','err');});
+
 $('saveBtn').addEventListener('click',async()=>{
  if(!connected||busy)return;
  busy=true;setControlsEnabled(true);
@@ -90,12 +101,30 @@ $('saveBtn').addEventListener('click',async()=>{
  }catch(e){message('Save failed: '+e.message+' Check database rules/permissions.','err');}
  finally{busy=false;setControlsEnabled(connected);}
 });
+
 $('reloadBtn').addEventListener('click',async()=>{
  if(!connected||busy)return;
  busy=true;setControlsEnabled(true);
  try{const snap=await ref.get();render(snap.val()||{});message('Settings reloaded from Firebase.','ok');}
  catch(e){message('Reload failed: '+e.message,'err');}
  finally{busy=false;setControlsEnabled(connected);}
+});
+
+clearSessionsBtn.addEventListener('click', async ()=>{
+  if(!connected || busy) return;
+  if(!confirm('Are you sure? This will instantly log out ALL users from all devices.')) return;
+  busy=true; setControlsEnabled(true);
+  clearSessionsBtn.textContent = '⏳ Clearing...';
+  try{
+    // Set a global session clear timestamp
+    await db.ref('/forceLogout').set(Date.now());
+    message('All device sessions cleared successfully. All users have been logged out.','ok');
+  }catch(e){
+    message('Failed to clear sessions: '+e.message,'err');
+  }finally{
+    busy=false; setControlsEnabled(connected);
+    clearSessionsBtn.textContent = '🚨 Clear All Device Sessions';
+  }
 });
 })();
 </script>
