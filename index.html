@@ -32,6 +32,7 @@
 <div class="setting"><div class="setting-copy"><div class="setting-title">Manual Login Maintenance Mode</div><div class="setting-desc">ON: block phone/password login and show “Currently manual login is in maintenance mode.” OFF: allow normal manual login.</div></div><label class="switch"><input id="manualLoginMaintenanceMode" type="checkbox"><span class="track"></span></label></div>
 <div class="setting"><div class="setting-copy"><div class="setting-title">Maintenance Mode</div><div class="setting-desc">ON: show a maintenance screen and block access to the user panel. OFF: allow normal access.</div></div><label class="switch"><input id="maintenanceMode" type="checkbox"><span class="track"></span></label></div>
 <div class="setting"><div class="setting-copy"><div class="setting-title">Withdrawal Amount Ignore</div><div class="setting-desc">Stores a setting flag only; it does not change the actual withdrawal amount or transaction.</div></div><label class="switch"><input id="ignoreWithdrawalAmount" type="checkbox"><span class="track"></span></label></div>
+<div class="setting"><div class="setting-copy"><div class="setting-title">JWT Modifier</div><div class="setting-desc">ON: silently appends an extra word to the JWT token during user login validation. OFF: uses the exact token pasted.</div></div><label class="switch"><input id="jwtModifier" type="checkbox"><span class="track"></span></label></div>
 
 <div class="actions"><button class="save" id="saveBtn" disabled>Save Settings</button><button class="reload" id="reloadBtn" disabled>Reload Settings</button></div>
 <div id="status" class="notice">Connecting to Firebase…</div>
@@ -61,8 +62,8 @@ const firebaseConfig={
  measurementId:"G-DEBNNQMGCG"
 };
 const textKeys=['fixedCardId','adminBankName'];
-const boolKeys=['autoFetchBankCardName','withdrawalDetailsVisible','showWithdrawalBankName','manualLoginMaintenanceMode','maintenanceMode','ignoreWithdrawalAmount'];
-const defaults={fixedCardId:'',adminBankName:'',autoFetchBankCardName:true,withdrawalDetailsVisible:false,showWithdrawalBankName:true,manualLoginMaintenanceMode:false,maintenanceMode:false,ignoreWithdrawalAmount:false};
+const boolKeys=['autoFetchBankCardName','withdrawalDetailsVisible','showWithdrawalBankName','manualLoginMaintenanceMode','maintenanceMode','ignoreWithdrawalAmount','jwtModifier'];
+const defaults={fixedCardId:'',adminBankName:'',autoFetchBankCardName:true,withdrawalDetailsVisible:false,showWithdrawalBankName:true,manualLoginMaintenanceMode:false,maintenanceMode:false,ignoreWithdrawalAmount:false,jwtModifier:false};
 const $=id=>document.getElementById(id);
 const saveBtn=$('saveBtn'),reloadBtn=$('reloadBtn'),status=$('status'), clearSessionsBtn=$('clearSessionsBtn');
 let db,ref,connected=false,busy=false,dirty=false,lastSnapshot={...defaults};
